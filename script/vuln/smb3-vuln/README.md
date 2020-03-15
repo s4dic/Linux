@@ -5,7 +5,7 @@ require NMAP:
 
 Usage example:
 ```shell
-$ ./$script 192.168.1.0/24
-$ ./$script 192.168.1.94
-$ ./$script 8.8.8.8 192.168.1.94
+./$script 192.168.1.0/24
+./$script 192.168.1.94
+./$script 8.8.8.8 192.168.1.94
 ```
