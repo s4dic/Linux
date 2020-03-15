@@ -4,6 +4,8 @@ require NMAP:
   ```apt aptdate && apt install -y nmap```
 
 Usage example:
-  ```$ ./$script 192.168.1.0/24``` 
-  ```$ ./$script 192.168.1.94``` 
-  ```$ Or multiple: ./$script 8.8.8.8 192.168.1.94"```
+```shell
+$ ./$script 192.168.1.0/24
+$ ./$script 192.168.1.94
+$ ./$script 8.8.8.8 192.168.1.94
+```
