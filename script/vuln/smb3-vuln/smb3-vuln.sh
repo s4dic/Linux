@@ -1,5 +1,5 @@
 #!/bin/bash
-#DEPENDENCIES : apt aptdate & apt install -y nmap
+#DEPENDENCIES : apt aptdate && apt install -y nmap
 #Tested on Debian OS based version (ubuntu ect.)
 ipvuln=`echo "$@"`
 
