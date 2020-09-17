@@ -33,7 +33,7 @@ function settingsempty {
 	--field="Fullscreen:CB" Yes,No \
 	--field="Show FPS:CB" No,Yes \
 	--field="Borderless:CB" Yes,No \
-	--field="FPS LIMIT:CB" 250,300,400,500,1000,2000,2500 \
+	--field="FPS LIMIT:CB" 150,250,300,400,500,1000,2000,2500 \
 	--field="disable keyboard/mouse:CB" Yes,No \
 	--field="show mouse above the L-G window:CB" Yes,No > /$(whoami)/.config/sleekglass/config.ini
 
@@ -136,9 +136,21 @@ function settings {
 	fi
 }
 
+#kill lookinglass function
+function pkid {
+	sleep 1
+	killppid=`cat /tmp/ppid`; killppid2=`cat /tmp/ppid2`
+	kill -9 $killppid2 2>/dev/null; sleep 1; kill -9 $killppid 2>/dev/null
+	ppid=`ps aux | grep "SLEEKGLASS" | grep "looking-glass" | sed 's/\  0.*//' | sed -e "s/root      //g"`
+	# CHANGE YOUR USERNAME UNDER THIS LINE (here "home")
+	ppid2=`ps aux | grep "sleekglass.sh" | grep pkexec | sed 's/\  0.*//' | sed -e "s/home      //g"`
+	echo "$ppid" > /tmp/ppid; echo "$ppid2" > /tmp/ppid2;
+}
+
 function stopstream {
 	kill -9 $pid 2>/dev/null
 }
+pkid &
 
 #windows form menu
 while true;
@@ -151,6 +163,7 @@ yad --title="SLEEKGLASS : a simple client for Looking Glass" \
 	--button="Close!$dir/icons/Close.png":5
 	action=$?
 	if [[ "$action" == "1" ]]; then
+		stopstream
 		createconfig
 		startstream
 	elif [[ "$action" == "2" ]]; then
