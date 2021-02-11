@@ -11,18 +11,18 @@ dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 ami=`whoami`
 #get current script name
 me=`basename "$0"`
-
+usr=`echo $LOGNAME`
 # (optional) restore the good iptables rules for pci passthrough
-iptables-restore < /etc/iptables/rules.v4
+#iptables-restore < /etc/iptables/rules.v4
 
 #root access verification
-if [[ "$ami" != "root" ]]; then
-	zenity --error --title="root not detected" --text="User $ami was not root"
-	exit 0
-fi
+#if [[ "$ami" != "root" ]]; then
+	#zenity --error --title="root not detected" --text="User $ami was not root"
+	#exit 0
+#fi
 
 #Get screen information
-xrandr | grep " connected " | cut -f1 -d " " > /tmp/.sleekglass-screen.log
+#xrandr | grep " connected " | cut -f1 -d " " > /tmp/.sleekglass-screen.log
 
 function settingsempty {
 	#Window form
@@ -35,17 +35,17 @@ function settingsempty {
 	--field="Borderless:CB" Yes,No \
 	--field="FPS LIMIT:CB" 150,250,300,400,500,1000,2000,2500 \
 	--field="disable keyboard/mouse:CB" Yes,No \
-	--field="show mouse above the L-G window:CB" Yes,No > /$(whoami)/.config/sleekglass/config.ini
+	--field="show mouse above the L-G window:CB" Yes,No > /home/$usr/.config/sleekglass/config.ini
 
-	settingsvalue=`cat /$(whoami)/.config/sleekglass/config.ini`
-	> /$(whoami)/.config/sleekglass/config.json
+	settingsvalue=`cat /home/$usr/.config/sleekglass/config.ini`
+	> /home/$usr/.config/sleekglass/config.json
 	
 	#Delimitation
 	for demilitation in $(echo $settingsvalue | tr "|" "\n")
 	do
-  			echo "$demilitation" >> /$(whoami)/.config/sleekglass/config.json
+  			echo "$demilitation" >> /home/$usr/.config/sleekglass/config.json
 	done
-	verif=`cat /$(whoami)/.config/sleekglass/config.ini`
+	verif=`cat /home/$usr/.config/sleekglass/config.ini`
 	if [[ "$verif" != "" ]]; then
 		notify-send -i "$dir/icons/Logo.png" "Sleekglass" "All settings are saved for your future connections"
 	fi
@@ -63,39 +63,38 @@ function about {
 
 function emptyornot {
 	#Check if config exist
-	configfile=/$(whoami)/.config/sleekglass/config.ini
-	echo "mon path: /$(whoami)/.config/sleekglass/config.ini"
-	
+	configfile=/home/$usr/.config/sleekglass/config.ini
+	echo "mon path: /home/$usr/.config/sleekglass/config.ini"
+
 	if [ ! -f "$configfile" ]; then
 	    #Create config file
-	    mkdir -p /$(whoami)/.config/sleekglass/ 2> /dev/null
+	    mkdir -p /home/$usr/.config/sleekglass/ 2> /dev/null
 	    settingsempty
 	fi
-	emptyconf=`cat /$(whoami)/.config/sleekglass/config.ini`
+	emptyconf=`cat /home/$usr/.config/sleekglass/config.ini`
 	while [[ "$emptyconf" == "" ]]; do
 		settingsempty
-		emptyconf=`cat /$(whoami)/.config/sleekglass/config.ini`
+		emptyconf=`cat /home/$usr/.config/sleekglass/config.ini`
 	done
 }
 emptyornot
 
-
 function createconfig {
-	> /$(whoami)/.config/sleekglass/config.json
-	settingsvalue=`cat /$(whoami)/.config/sleekglass/config.ini`
+	> /home/$usr/.config/sleekglass/config.json
+	settingsvalue=`cat /home/$usr/.config/sleekglass/config.ini`
 	#Delimitation
-	for demilitation in $(echo $settingsvalue | tr "|" "\n"); do echo "$demilitation" >> /$(whoami)/.config/sleekglass/config.json; done
+	for demilitation in $(echo $settingsvalue | tr "|" "\n"); do echo "$demilitation" >> /home/$usr/.config/sleekglass/config.json; done
 
 	#Get settings
-	IP=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 1'`
-	Port=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 2'`
-	Screenopening=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 3'`; 
-	Fullscreen=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 4'`
-	Showfps=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 5'`
-	Borderless=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 6'`
-	FPSlimit=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 7'`
-	mousekeyboard=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 8'`
-	mouseaboseLGwindows=`cat /$(whoami)/.config/sleekglass/config.json | awk 'NR == 9'`
+	IP=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 1'`
+	Port=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 2'`
+	Screenopening=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 3'`; 
+	Fullscreen=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 4'`
+	Showfps=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 5'`
+	Borderless=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 6'`
+	FPSlimit=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 7'`
+	mousekeyboard=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 8'`
+	mouseaboseLGwindows=`cat /home/$usr/.config/sleekglass/config.json | awk 'NR == 9'`
 
 	#define the primary screen
 	xrandr --output $Screenopening --primary
@@ -113,12 +112,12 @@ function startstream {
 	pid=$! 2> /dev/null
 	#windows flox
 	echo "executed command: looking-glass-client -c $IP -p $Port $Fullscreen $Showfps $Borderless -K $FPSlimit $mousekeyboard $mouseaboseLGwindows"
-	looking-glass-client -c $IP -p $Port $Fullscreen2 $Showfps2 $Borderless2 -K $FPSlimit $mousekeyboard2 $mouseaboseLGwindows2 &
+	/usr/local/bin/looking-glass-client -c $IP -p $Port $Fullscreen2 $Showfps2 $Borderless2 $FPSlimit $mousekeyboard2 $mouseaboseLGwindows2 &
 	pid=$!
 }
 
 function settings {
-	md5check1=`md5sum /$(whoami)/.config/sleekglass/config.ini | sed 's/ .*//'`
+	md5check1=`md5sum /home/$usr/.config/sleekglass/config.ini | sed 's/ .*//'`
 
 	#Window form
 	notempty=`yad --center --width=500 --height=100 --title="Sleek glass - Looking Glass Client" --form --columns=2 \
@@ -131,7 +130,7 @@ function settings {
 	--field="disable keyboard/mouse:CB" $mousekeyboard,Yes,No \
 	--field="show mouse above the L-G window:CB" $mouseaboseLGwindows,Yes,No`
 	if [[ "$notempty" != "" ]]; then
-		echo "$notempty" > /$(whoami)/.config/sleekglass/config.ini
+		echo "$notempty" > /home/$usr/.config/sleekglass/config.ini
 		notify-send -i "$dir/icons/Logo.png" "Sleekglass" "All settings are saved for your future connections"
 	fi
 }
