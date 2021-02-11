@@ -22,7 +22,7 @@ usr=`echo $LOGNAME`
 #fi
 
 #Get screen information
-#xrandr | grep " connected " | cut -f1 -d " " > /tmp/.sleekglass-screen.log
+xrandr | grep " connected " | cut -f1 -d " " > /tmp/.sleekglass-screen.log
 
 function settingsempty {
 	#Window form
